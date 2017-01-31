@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Datatable</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+<!-- selector app-root 
+	our main component selector   -->
+  <app-root>Loading...</app-root>
+  
+
+  <br>
+  <!--
+  	 filters input fields we can put as many input 
+	 fields as we want all we need is to specify the fields and 
+	 where do we want angular to take the value from. 
+	 specified on DT.filters{} 
+  -->
+  <input type='text' id='status' class ='filters' placeholder="status" />
+  <input type='text' id='is_technitian' class='filters' placeholder="tech"  />
+  <script>
+  // SAJ.functions -- all the functions we want to include in that page and bind to our buttons 
+  	SAJ={};
+  	SAJ.editSomthing = function(id,name,email_address){
+		console.log(id);
+		console.log(name);
+		console.log(email_address);
+		debugger;
+	}
+
+	SAJ.deleteData = function(id,name,email_address){	
+		console.log(id);
+		console.log(name);
+		console.log(email_address);
+		debugger;
+	}
+
+	SAJ.detailsData = function(id,name,email_address){	
+		console.log(id);
+		console.log(name);
+		console.log(email_address);
+		debugger;
+	}
+
+	//DT - global variable - used for basic settings and lets us add functions and settings to our datatable scripts without writing directly into angular 			components 
+
+	// settings 
+	// basic settings for our datatable 
+	//1. size - size of rows per page 
+	//2. url - ajax url to get data from 
+	//3. ajax - if true will go to db for the internal sorting and paging functions . if set to false all data is saved in angular var (this.data) and  	   sorting functions work only internaly  - better for small sized tables like users table
+	//4. size_options - an array of integers used to set the display options per page ( for example here we can change size settings to 5,10,20 rows per 		page )  
+
+	DT = {
+			'url': 'http://dev.sendajob.local/ajax.php?page=angular_test', 
+			'size':5,
+			'ajax':true,
+			'size_options' :[5,10,20]
+			
+	}
+	// buttons - function params - argumentss that fhe function takes
+	// function params = array of paramaters name 
+	DT.buttons = [
+		{'name':'edit','function':SAJ.editSomthing,'function_params' : ['id','name','email_address']},
+		{'name':'delete','function':SAJ.deleteData,'function_params' : ['id','name','email_address']},
+		{'name':'details','function':SAJ.detailsData,'function_params' : ['id','name','email_address']}
+	];
+
+	//filters 
+	// the way we want to take are input and filters values is within the getVal return value  
+	// value property can be set up from here ( input type hidden for example ) or taken from the user 
+	// in this example the value property is set to "" an empty string.
+
+	DT.filters = [
+		{'name':'status' ,'getVal':function(){ return document.getElementById('status').value},'value' : ""},
+		{'name':'is_technitian' ,'getVal': function(){ return document.getElementById('is_technitian').value}, 'value' : ""}
+	];
+
+	// getFiltersValues - colects values from our filters that will be included in the request 
+	DT.getFiltersValues = function(){
+		for(var i = 0 ; i < DT.filters.length ; i++){
+			var filter = DT.filters[i];
+			filter.value = filter.getVal();
+			DT.filters[i] = filter;
+		}
+	}
+
+
+	//redraw table - colect data from filters and redraw 
+	DT.draw = function(){
+		//component is now on the global scope 
+		component.component.trigerTableReDraw();
+	}
+
+	// callBack function that trigers after table is loaded 
+	DT.callBack = function(){
+		
+	}
+	
+
+				
+  </script>
+</body>
+</html>

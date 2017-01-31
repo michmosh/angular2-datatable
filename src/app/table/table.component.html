@@ -1,0 +1,84 @@
+
+<br>
+<br>
+<select (change)="setSize($event.target.value)">
+	<option *ngFor="let option of size_options " >{{option}}</option>
+</select>
+<h3 align="center" *ngIf="empty_data == true" > 
+	you currently have no data 
+</h3>
+ <table *ngIf="empty_data == false " class="table dataTable"> 
+    <thead>
+      <tr>
+        <th class='badge'  *ngFor='let attr of show_columns' (click)="sorting(attr,$event)">{{attr.friendly_name}}  <span class='sorting'></span></th><th>Actions</th>
+      </tr> 
+    </thead>
+    <tbody *ngIf="ajax">
+
+        <tr  *ngFor='let one_data of data | async' 
+            [class.selected]='one_data === selectedUser' 
+            (click)='onSelect(one_data)'>
+
+	        <td *ngFor='let one_col of show_columns'>
+	          {{one_data[attr.name]}}
+	        </td>
+
+	        <td> 
+	            <button *ngFor='let button of buttons'
+	            				#one_button
+	            				 [class.selected]='button === selected_button' 
+	            				(click)="btnCallBack(button, one_data)">
+	            			{{button}}
+	            </button>
+	           
+	        </td>
+      </tr>
+    </tbody>
+
+    <tbody *ngIf="!ajax">
+        <tr  *ngFor='let one_data of createRange(size) ; let index=index' 
+            [class.selected]='one_data === selectedUser' 
+            (click)='onSelect(one_data)'>
+            <template [ngIf]="data[index+ paging_index]">
+		        <td *ngFor='let attr of show_columns'>
+			        	{{data[index+ paging_index][attr.name]}}
+		        </td>
+		        <td> 
+		            <button *ngFor='let button of buttons' 
+		            				#one_button
+		            				[class.selected]='button === selected_button' 
+		            				(click)="btnCallBack(button , one_data)">
+		            			{{button.name}}
+		            </button>        
+				</td>
+			</template> 
+      </tr>
+    </tbody>
+</table>
+<br>
+
+<div align='right'>
+	<a class='paging_arrows' (click)="nextPage(page,$event,'down')"> < </a>
+	<a *ngFor="let page of createRange(count/size)" (click)="nextPage(page,$event,false)" [class.selected]='page === selected_page' >{{page}}</a>
+	<a class='paging_arrows' (click)="nextPage(page,$event,'up')"> > </a>
+</div>
+<br><br>
+<!-- i added another functiuon when a row is clicked onSelect that return the clicked row data n this example it returns the user id  
+<div *ngIf="selected_user">
+  <h2>
+    {{selected_user.id | uppercase}} is my user
+  </h2>
+</div>
+ -->
+<div>
+  <label> search </label>
+  <input #search/>  <!-- input is an angular object named search (<input #search /> ) and its value or attributes can be found under search.value  -->
+  <button (click)="getSearch(search.value); search.value=''">search</button>
+</div>  
+
+
+
+
+
+
+
